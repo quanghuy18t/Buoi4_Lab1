@@ -16,7 +16,7 @@ export default function RestaurantScreen() {
   let item = params;
 
   const favorite = useSelector(state =>selectFavoriteById(state, item.name))
-
+console.log('123', favorite);
   useEffect(() => {
     navigation.setOptions({drawerLabel: item.name});
     if (item && item.id) {
@@ -37,7 +37,7 @@ export default function RestaurantScreen() {
           <Pressable
             style={styles.goBack}
             onPress={() => {
-              if (favorite) {
+              if (favorite.length >= 0) {
                 dispatch(addToFavorite({...item}));
               } else {
                 dispatch(removeFromFavorite({name: item.name}));
@@ -45,7 +45,7 @@ export default function RestaurantScreen() {
             }}
           >
             <AntDesign 
-              name= {favorite ? 'heart' : 'hearto'}
+              name= {!favorite ? 'heart' : 'hearto'}
               size={20} 
               color={'rgba(251, 146, 60, 1)'} 
             />

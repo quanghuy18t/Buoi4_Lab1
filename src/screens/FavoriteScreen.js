@@ -1,14 +1,44 @@
-import { SafeAreaView, StyleSheet, TextInput, View } from 'react-native'
-import React from 'react'
+import { SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
+import React, { useCallback, useEffect, useState } from 'react'
 import { StatusBar } from 'expo-status-bar'
 import { Feather } from '@expo/vector-icons'
 import { useSelector } from 'react-redux'
 import { selectFavorite } from '../slices/FavoriteSlice'
-import Feature from '../components/Feature'
-import RestaurantCard from '../components/RestaurantCard'
+import FavoriteCard from '../components/FavoriteCard'
+import debounce from 'lodash.debounce'
+import { useTranslation } from 'react-i18next'
 
 export default function FavoriteScreen() {
   const favorites = useSelector(selectFavorite);
+  const [textSearch, setTextSearch] = useState('');
+  const [newFavorite, setNewFavorite] = useState(favorites);
+  const { t } = useTranslation(); 
+
+  useEffect(() => {
+    setNewFavorite(favorites);
+  }, []);
+
+  const searchFromData = async (text) => {
+    const lowerText = text.toLowerCase();
+    console.log(favorites)
+    return favorites.filter(item => 
+      item.name.toLowerCase().includes(lowerText)
+    );
+  };
+
+  const debouncedSearch = useCallback(
+    debounce(async (text) => {
+      if (text) {
+        const results = await searchFromData(text);
+        // console.log(results);
+        setNewFavorite(results);
+      }
+      else {
+        setNewFavorite(favorites);
+      }
+    }, 200),
+    []
+  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -18,16 +48,24 @@ export default function FavoriteScreen() {
           <Feather name='search' size={25} color='black' />
           <TextInput 
             style={styles.textInputSearch}
-            placeholder='Search Food' 
+            placeholder={t('search')}
+            value={textSearch}
+            onChangeText={(text) => {
+              setTextSearch(text);
+              debouncedSearch(text);
+            }}
           />
         </View>
       </View>
-      <View style={{marginTop: 20, alignItems: 'center', width: 400}}>
+      <View style={{marginTop: 20, alignItems: 'center'}}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+        >
           {
-            favorites && favorites.length > 0 ? (
-              favorites.map((item, index) => {
+            newFavorite && newFavorite.length > 0 ? (
+              newFavorite.map((item, index) => {
                 return (
-                  <RestaurantCard
+                  <FavoriteCard
                     item={item}
                     key={index}
                   />
@@ -37,7 +75,8 @@ export default function FavoriteScreen() {
               <Text>No Favorite</Text>
             )
           }
-        </View>
+        </ScrollView>
+      </View>
     </SafeAreaView>
   )
 }

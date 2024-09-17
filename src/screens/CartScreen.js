@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectRestaurant } from '../slices/RestaurantSlice';
 import { removeFromCart, selectCartItems, selectCartTotal } from '../slices/CartSlice';
+import { useTranslation } from 'react-i18next';
 
 export default function CartScreen() {
   const dispatch = useDispatch();
@@ -14,6 +15,7 @@ export default function CartScreen() {
   const cartTotal = useSelector(selectCartTotal);
   const navigation = useNavigation();
   const [groupedItems, setGroupedItems] = useState({});
+  const { t } = useTranslation()
 
   const deliveryFee = 15000;
 
@@ -37,7 +39,7 @@ export default function CartScreen() {
     <View style={{backgroundColor: 'white', flex: 1}}>
       <View style={{position: 'relative', paddingVertical: 16, elevation: 2}}>
         <View>
-          <Text style={styles.title}>Your Card</Text>
+          <Text style={styles.title}>{t('yourcart')}</Text>
           <Text style={styles.name}>{restaurant.name}</Text>
         </View>
       </View>
@@ -46,7 +48,7 @@ export default function CartScreen() {
           source={require('../assets/images/shipper.png')} 
           style={{borderRadius: 9999, width: 50, height: 50, margin: 10}}
         />
-        <Text style={{flex: 1, paddingLeft: 16}}>Delivery in 20-30 minutes</Text>
+        <Text style={{flex: 1, paddingLeft: 16}}>{t('delivery')}</Text>
         <TouchableOpacity>
           <Text style={styles.change}>Change</Text>
         </TouchableOpacity>
@@ -83,15 +85,15 @@ export default function CartScreen() {
       </ScrollView>
       <View style={styles.delivery}>
         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-          <Text style={{color: '#374151'}}>Subtotal</Text>
+          <Text style={{color: '#374151'}}>{t('subtotal')}</Text>
           <Text style={{color: '#374151'}}>{parseVND(cartTotal)}</Text>
         </View>
         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-          <Text style={{color: '#374151'}}>Delivery Fee</Text>
+          <Text style={{color: '#374151'}}>{t('deliveryfee')}</Text>
           <Text style={{color: '#374151'}}>{parseVND(deliveryFee)}</Text>
         </View>
         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-          <Text style={{color: '#374151', fontWeight: '800'}}>Order Total</Text>
+          <Text style={{color: '#374151', fontWeight: '800'}}>{t('ordertotal')}</Text>
           <Text style={{color: '#374151', fontWeight: '800'}}>{parseVND(deliveryFee + cartTotal)}</Text>
         </View>
         <View style={{paddingTop: 20}}>
@@ -107,7 +109,7 @@ export default function CartScreen() {
                 fontSize: 18
               }}
             >
-              Place Order
+              {t('placeorder')}
             </Text>
           </TouchableOpacity>
         </View>

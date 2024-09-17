@@ -9,9 +9,11 @@ import React from 'react'
 import RestaurantCard from './RestaurantCard'
 import { useSelector } from 'react-redux';
 import { selectCategory } from '../slices/CategorySlice';
+import { useTranslation } from 'react-i18next';
 
 export default function Feature({title, description, restaurants}) {
   const category = useSelector(selectCategory);
+  const { t } = useTranslation();
 
   return (
     <View>
@@ -21,7 +23,7 @@ export default function Feature({title, description, restaurants}) {
           <Text style={styles.description}>{description}</Text>
         </View>
         <TouchableOpacity>
-          <Text style={styles.seeAll}>See All</Text>
+          <Text style={styles.seeAll}>{t('seeall')}</Text>
         </TouchableOpacity>
       </View>
       <ScrollView
